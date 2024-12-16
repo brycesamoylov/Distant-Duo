@@ -239,49 +239,53 @@ export function Hangman() {
   return (
     <Card className="p-6">
       <div className="space-y-6">
-        {isCreator ? (
-          <div className="text-center space-y-4">
-            <h3 className="text-lg font-semibold">You created the word:</h3>
-            <p className="text-2xl font-mono tracking-wider">{currentGame.word}</p>
-            <p className="text-gray-500">Wait for your partner to guess!</p>
-          </div>
-        ) : (
+        {currentGame && (
           <>
-            <div className="text-center">
-              <pre className="font-mono text-lg">
-                {HANGMAN_DRAWINGS[currentGame.wrongGuesses]}
-              </pre>
-            </div>
-
-            <div className="text-center">
-              <p className="text-2xl font-mono tracking-wider mb-2">
-                {currentGame.word
-                  .split('')
-                  .map(letter => currentGame.guessedLetters.includes(letter) ? letter : '_')
-                  .join(' ')}
-              </p>
-              <p className="text-sm text-gray-500">
-                Wrong guesses: {currentGame.wrongGuesses} / {currentGame.maxGuesses}
-              </p>
-            </div>
-
-            {currentGame.status === 'active' && (
-              <div className="grid grid-cols-7 gap-2">
-                {ALPHABET.map((letter) => (
-                  <Button
-                    key={letter}
-                    variant="outline"
-                    className={cn(
-                      "w-full",
-                      currentGame.guessedLetters.includes(letter) && "opacity-50 cursor-not-allowed"
-                    )}
-                    onClick={() => makeGuess(letter)}
-                    disabled={currentGame.guessedLetters.includes(letter)}
-                  >
-                    {letter.toUpperCase()}
-                  </Button>
-                ))}
+            {isCreator ? (
+              <div className="text-center space-y-4">
+                <h3 className="text-lg font-semibold">You created the word:</h3>
+                <p className="text-2xl font-mono tracking-wider">{currentGame.word}</p>
+                <p className="text-gray-500">Wait for your partner to guess!</p>
               </div>
+            ) : (
+              <>
+                <div className="text-center">
+                  <pre className="font-mono text-lg">
+                    {HANGMAN_DRAWINGS[currentGame.wrongGuesses]}
+                  </pre>
+                </div>
+
+                <div className="text-center">
+                  <p className="text-2xl font-mono tracking-wider mb-2">
+                    {currentGame.word
+                      .split('')
+                      .map(letter => currentGame.guessedLetters.includes(letter) ? letter : '_')
+                      .join(' ')}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Wrong guesses: {currentGame.wrongGuesses} / {currentGame.maxGuesses}
+                  </p>
+                </div>
+
+                {currentGame.status === 'active' && (
+                  <div className="grid grid-cols-7 gap-2">
+                    {ALPHABET.map((letter) => (
+                      <Button
+                        key={letter}
+                        variant="outline"
+                        className={cn(
+                          "w-full",
+                          currentGame.guessedLetters.includes(letter) && "opacity-50 cursor-not-allowed"
+                        )}
+                        onClick={() => makeGuess(letter)}
+                        disabled={currentGame.guessedLetters.includes(letter)}
+                      >
+                        {letter.toUpperCase()}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </>
         )}

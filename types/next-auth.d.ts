@@ -7,6 +7,11 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      avatar?: {
+        icon: string;
+        color: string;
+        bg: string;
+      };
     };
   }
 
@@ -15,6 +20,11 @@ declare module "next-auth" {
     name?: string | null;
     email?: string | null;
     image?: string | null;
+    avatar?: {
+      icon: string;
+      color: string;
+      bg: string;
+    };
     partnerId?: string | null;
   }
 } 

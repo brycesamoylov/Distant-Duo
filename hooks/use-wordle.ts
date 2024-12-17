@@ -13,6 +13,7 @@ import {
   onSnapshot,
   updateDoc,
   doc,
+  deleteDoc,
 } from 'firebase/firestore';
 import type { WordleGame, WordleGuess } from '@/lib/types';
 import { usePartner } from './use-partner';
@@ -42,7 +43,7 @@ export function useWordle() {
       collection(db, 'wordle_games'),
       where('players', 'array-contains', session.user.id),
       orderBy('createdAt', 'desc'),
-      where('status', '==', 'active')
+      where('status', 'in', ['active', 'won', 'lost'])
     );
 
     const unsubscribe = onSnapshot(gamesQuery, (snapshot) => {
@@ -64,6 +65,10 @@ export function useWordle() {
 
   const startNewGame = async () => {
     if (!session?.user?.id || !partner?.id) return;
+
+    if (currentGame && (currentGame.status === 'won' || currentGame.status === 'lost')) {
+      await deleteDoc(doc(db, 'wordle_games', currentGame.id));
+    }
 
     const randomWord = WORDS[Math.floor(Math.random() * WORDS.length)];
     const gameData = {

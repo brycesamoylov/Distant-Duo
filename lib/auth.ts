@@ -14,6 +14,34 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+    callbackUrl: {
+      name: `__Secure-next-auth.callback-url`,
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+    csrfToken: {
+      name: `__Host-next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+  },
   callbacks: {
     async session({ session, token }) {
       if (session?.user) {

@@ -24,6 +24,13 @@ const WORDS = [
   'FAITH', 'TRUST', 'UNITY', 'SHARE', 'BLOOM'
 ];
 
+type GuessStatus = "correct" | "present" | "absent";
+
+interface WordleGuess {
+  letter: string;
+  status: GuessStatus;
+}
+
 export function useWordle() {
   const { data: session } = useSession();
   const { partner } = usePartner();
@@ -97,41 +104,21 @@ export function useWordle() {
     });
   };
 
-  const checkGuess = (guess: string): { letter: string; status: 'correct' | 'present' | 'absent' }[] => {
+  const checkGuess = (guess: string): WordleGuess[] => {
     if (!currentGame) return [];
+
+    const word = currentGame.word.toUpperCase();
+    const guessArray = guess.toUpperCase().split('');
     
-    const word = currentGame.word;
-    const result = [];
-    const letterCount: { [key: string]: number } = {};
-
-    // Count letters in the target word
-    for (const letter of word) {
-      letterCount[letter] = (letterCount[letter] || 0) + 1;
-    }
-
-    // First pass: mark correct letters
-    for (let i = 0; i < guess.length; i++) {
-      const letter = guess[i].toUpperCase();
-      if (letter === word[i]) {
-        result[i] = { letter, status: 'correct' };
-        letterCount[letter]--;
+    return guessArray.map((letter, i): WordleGuess => {
+      if (word[i] === letter) {
+        return { letter, status: "correct" };
       }
-    }
-
-    // Second pass: mark present and absent letters
-    for (let i = 0; i < guess.length; i++) {
-      if (result[i]) continue;
-      
-      const letter = guess[i].toUpperCase();
-      if (letterCount[letter] > 0) {
-        result[i] = { letter, status: 'present' };
-        letterCount[letter]--;
-      } else {
-        result[i] = { letter, status: 'absent' };
+      if (word.includes(letter)) {
+        return { letter, status: "present" };
       }
-    }
-
-    return result;
+      return { letter, status: "absent" };
+    });
   };
 
   return {

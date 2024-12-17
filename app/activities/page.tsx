@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Gamepad2 } from "lucide-react";
 import { useState } from "react";
-import { Hangman } from "@/components/games/hangman";
+import { TicTacToe } from "@/components/games/tictactoe";
 import { Wordle } from "@/components/games/wordle";
 
 type Game = {
@@ -19,11 +19,11 @@ type Game = {
 const games: Game[] = [
   { 
     icon: Gamepad2,
-    label: "Hangman",
-    description: "Classic word guessing game to play together",
+    label: "Tic-Tac-Toe",
+    description: "Classic game of X's and O's to play together",
     players: "2 Players",
     comingSoon: false,
-    component: Hangman
+    component: TicTacToe
   },
   { 
     icon: Gamepad2,

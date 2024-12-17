@@ -37,18 +37,15 @@ export interface Emotion {
   userName?: string;
 }
 
-export interface HangmanGame {
+export interface TicTacToeGame {
   id: string;
-  word: string;
-  guessedLetters: string[];
+  board: string[];
+  currentTurn: string;
   createdAt: Date;
   creatorId: string;
-  guesserId: string;
-  status: 'waiting' | 'active' | 'won' | 'lost';
-  maxGuesses: number;
-  wrongGuesses: number;
   players: string[];
-  readyToPlay: string[];
+  status: 'active' | 'won' | 'lost' | 'draw';
+  winner?: string | null;
 }
 
 export interface WordleGame {

@@ -1,3 +1,5 @@
+'use client';
+
 export const EMOTICONS = [
   'ʕ•ᴥ•ʔ',    // Bear
   '(=^･^=)',   // Cat
@@ -17,5 +19,8 @@ export const EMOTICONS = [
 ];
 
 export function getRandomEmoticon() {
+  if (typeof window === 'undefined') {
+    return EMOTICONS[0]; // Return a consistent emoticon on server
+  }
   return EMOTICONS[Math.floor(Math.random() * EMOTICONS.length)];
 } 

@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { usePartner } from "@/hooks/use-partner";
 import { Calendar, MessageCircle, Smile, Film, Heart, Users, Clock, Gamepad2 } from "lucide-react";
 import Link from "next/link";
-import { getRandomEmoticon } from "@/lib/emoticons";
+import { RandomEmoticon } from '@/components/ui/emoticon';
 
 export default function HomePage() {
   const { data: session } = useSession();
@@ -19,7 +19,7 @@ export default function HomePage() {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
             Stay connected with your loved one across any distance. Share moments, plan dates, and keep your bond strong.
           </p>
-          <div className="text-4xl animate-bounce">{getRandomEmoticon()}</div>
+          <div className="text-4xl animate-bounce">{<RandomEmoticon />}</div>
         </section>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -53,7 +53,7 @@ export default function HomePage() {
   if (!partner) {
     return (
       <div className="text-center py-16 space-y-8">
-        <div className="text-4xl mb-8">{getRandomEmoticon()}</div>
+        <div className="text-4xl mb-8">{<RandomEmoticon />}</div>
         <h1 className="text-4xl font-bold text-gray-900 mb-4">Almost There!</h1>
         <p className="text-xl text-gray-500 mb-8 max-w-xl mx-auto">
           Link with your partner to start your journey together and unlock all features.
@@ -72,7 +72,7 @@ export default function HomePage() {
     <div className="space-y-12">
       <section className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-8">
         <div className="flex items-center gap-4 mb-6">
-          <div className="text-3xl">{getRandomEmoticon()}</div>
+          <div className="text-3xl">{<RandomEmoticon />}</div>
           <div>
             <h1 className="text-4xl font-bold text-gray-900">Welcome Back!</h1>
             <p className="text-xl text-gray-600">Stay connected with {partner.name}</p>

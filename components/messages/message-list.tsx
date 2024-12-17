@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
@@ -18,52 +18,67 @@ export function MessageList() {
   const { messages, loading, sendMessage } = useMessages();
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
 
+  const userEmoticon = useMemo(() => getRandomEmoticon(), []);
+  const partnerEmoticon = useMemo(() => getRandomEmoticon(), []);
+
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   if (!session || !partner) {
     return (
-      <Card className="h-[600px] flex items-center justify-center">
+      <Card className="h-[600px] flex items-center justify-center bg-gradient-to-b from-pink-50/50">
         <p className="text-gray-500">Please sign in and link with your partner to chat</p>
       </Card>
     );
   }
 
   return (
-    <Card className="h-[600px] flex flex-col">
-      <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full p-4">
+    <Card className="h-[600px] flex flex-col bg-gradient-to-b from-pink-50/50">
+      <div className="p-4 border-b flex items-center gap-3">
+        <Avatar className="w-8 h-8">
+          <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-sm">
+            {partnerEmoticon}
+          </div>
+        </Avatar>
+        <div>
+          <h3 className="font-medium text-gray-900">{partner.name}</h3>
+          <p className="text-xs text-gray-500">Online</p>
+        </div>
+      </div>
+
+      <div className="flex-1 p-4">
+        <ScrollArea className="h-full pr-4">
           <div className="space-y-4">
             {messages.map((message) => {
               const isOwn = message.userId === session.user.id;
-              const user = isOwn ? session.user : partner;
-
               return (
                 <div
                   key={message.id}
                   className={cn(
-                    "flex items-end gap-2",
+                    "flex items-start gap-2 group",
                     isOwn && "flex-row-reverse"
                   )}
                 >
-                  <Avatar className="w-8 h-8">
+                  <Avatar className="w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center text-sm",
-                      "bg-pink-100"
+                      isOwn ? "bg-pink-100" : "bg-blue-100"
                     )}>
-                      {getRandomEmoticon()}
+                      {isOwn ? userEmoticon : partnerEmoticon}
                     </div>
                   </Avatar>
                   <div
                     className={cn(
-                      "rounded-lg px-3 py-2 max-w-[70%]",
-                      isOwn ? "bg-pink-600 text-white" : "bg-gray-100"
+                      "rounded-2xl px-4 py-2 max-w-[70%] shadow-sm",
+                      isOwn 
+                        ? "bg-pink-600 text-white rounded-tr-none" 
+                        : "bg-white rounded-tl-none"
                     )}
                   >
-                    <p>{message.content}</p>
+                    <p className="leading-relaxed">{message.content}</p>
                     <p className={cn(
-                      "text-xs mt-1",
+                      "text-[10px] mt-1 opacity-70",
                       isOwn ? "text-pink-100" : "text-gray-500"
                     )}>
                       {format(message.createdAt, 'HH:mm')}
@@ -75,6 +90,9 @@ export function MessageList() {
             <div ref={endOfMessagesRef} />
           </div>
         </ScrollArea>
+      </div>
+
+      <div className="p-4 border-t bg-white/50 backdrop-blur-sm">
         <MessageInput onSend={sendMessage} />
       </div>
     </Card>

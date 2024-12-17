@@ -14,7 +14,7 @@ import {
   updateDoc,
   doc,
 } from 'firebase/firestore';
-import type { WordleGame } from '@/lib/types';
+import type { WordleGame, WordleGuess } from '@/lib/types';
 import { usePartner } from './use-partner';
 
 const WORDS = [
@@ -25,11 +25,6 @@ const WORDS = [
 ];
 
 type GuessStatus = "correct" | "present" | "absent";
-
-interface WordleGuess {
-  letter: string;
-  status: GuessStatus;
-}
 
 export function useWordle() {
   const { data: session } = useSession();
@@ -109,16 +104,31 @@ export function useWordle() {
 
     const word = currentGame.word.toUpperCase();
     const guessArray = guess.toUpperCase().split('');
-    
-    return guessArray.map((letter, i): WordleGuess => {
+    const letterCount: { [key: string]: number } = {};
+
+    // Count letters in the target word
+    for (const letter of word) {
+      letterCount[letter] = (letterCount[letter] || 0) + 1;
+    }
+
+    // First pass: mark correct letters
+    const result: WordleGuess[] = guessArray.map((letter, i) => {
       if (word[i] === letter) {
-        return { letter, status: "correct" };
+        letterCount[letter]--;
+        return { letter, status: 'correct' as const };
       }
-      if (word.includes(letter)) {
-        return { letter, status: "present" };
-      }
-      return { letter, status: "absent" };
+      return { letter, status: 'absent' as const };
     });
+
+    // Second pass: mark present letters
+    result.forEach((guess, i) => {
+      if (guess.status !== 'correct' && letterCount[guess.letter] > 0) {
+        letterCount[guess.letter]--;
+        result[i] = { letter: guess.letter, status: 'present' as const };
+      }
+    });
+
+    return result;
   };
 
   return {

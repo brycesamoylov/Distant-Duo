@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { db } from '@/lib/firebase';
 import { 
@@ -32,7 +32,6 @@ export function useMessages() {
 
     const twentyFourHoursAgo = subHours(new Date(), 24);
     
-    // Simplified query using only userId and createdAt
     const messagesQuery = query(
       collection(db, 'messages'),
       where('userId', 'in', [session.user.id, partner.id]),

@@ -13,6 +13,7 @@ import {
   onSnapshot,
   updateDoc,
   doc,
+  deleteDoc,
 } from 'firebase/firestore';
 import type { HangmanGame } from '@/lib/types';
 import { usePartner } from './use-partner';
@@ -53,19 +54,26 @@ export function useHangman() {
     return () => unsubscribe();
   }, [session?.user?.id, partner?.id]);
 
-  const startNewGame = async (word: string, guesserId: string) => {
+  const startNewGame = async (word?: string) => {
     if (!session?.user?.id || !partner?.id) return;
+
+    if (currentGame && (currentGame.status === 'won' || currentGame.status === 'lost')) {
+      await deleteDoc(doc(db, 'hangman_games', currentGame.id));
+    }
+
+    if (!word) return;
 
     const gameData = {
       word: word.toLowerCase(),
       guessedLetters: [],
+      wrongGuesses: 0,
       createdAt: Timestamp.now(),
       creatorId: session.user.id,
-      guesserId,
+      guesserId: partner.id,
       status: 'active',
-      maxGuesses: 6,
-      wrongGuesses: 0,
       players: [session.user.id, partner.id],
+      maxGuesses: 6,
+      readyToPlay: [session.user.id],
     };
 
     await addDoc(collection(db, 'hangman_games'), gameData);
@@ -101,11 +109,19 @@ export function useHangman() {
     });
   };
 
+  const resetGame = async () => {
+    if (currentGame) {
+      await deleteDoc(doc(db, 'hangman_games', currentGame.id));
+      setCurrentGame(null);
+    }
+  };
+
   return {
     currentGame,
     loading,
     startNewGame,
     makeGuess,
     isCreator: currentGame?.creatorId === session?.user?.id,
+    resetGame,
   };
 } 

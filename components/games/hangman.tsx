@@ -109,7 +109,7 @@ function PlayAgainDialog({
 export function Hangman() {
   const { data: session } = useSession();
   const { partner } = usePartner();
-  const { currentGame, loading, startNewGame, makeGuess, isCreator } = useHangman();
+  const { currentGame, loading, startNewGame, makeGuess, isCreator, resetGame } = useHangman();
   const [newWord, setNewWord] = useState("");
   const [showRoleSelect, setShowRoleSelect] = useState(!currentGame);
   const [isCreatingWord, setIsCreatingWord] = useState(false);
@@ -175,7 +175,7 @@ export function Hangman() {
         <form onSubmit={(e) => {
           e.preventDefault();
           if (newWord.trim()) {
-            startNewGame(newWord.trim(), partner.id);
+            startNewGame(newWord.trim());
             setNewWord("");
           }
         }} className="space-y-4">
@@ -209,23 +209,28 @@ export function Hangman() {
     );
   }
 
+  // Add this function to handle game reset
+  const handleGameReset = async () => {
+    await resetGame(); // Reset the game in Firebase first
+    setShowRoleSelect(true);
+    setNewWord("");
+    setIsCreatingWord(false);
+  };
+
   // Game over state
   if (currentGame?.status === 'won' || currentGame?.status === 'lost') {
     return (
       <Card className="p-6">
-        <div className="space-y-6 text-center">
-          <h3 className="text-2xl font-semibold">
-            {currentGame.status === 'won' 
-              ? "Congratulations! 🎉" 
-              : "Game Over!"
-            }
-          </h3>
-          <p className="text-lg">The word was: <span className="font-bold">{currentGame.word}</span></p>
+        <div className="text-center space-y-4">
+          <div className="text-lg font-medium">
+            {currentGame.status === 'won' ? (
+              <span className="text-green-600">Congratulations! The word was: {currentGame.word}</span>
+            ) : (
+              <span className="text-red-600">Game Over! The word was: {currentGame.word}</span>
+            )}
+          </div>
           <Button 
-            onClick={() => {
-              setShowRoleSelect(true);
-              setIsCreatingWord(false);
-            }}
+            onClick={handleGameReset}
             className="bg-pink-600 hover:bg-pink-700"
           >
             Play Again

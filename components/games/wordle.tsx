@@ -107,7 +107,7 @@ export function Wordle() {
 
         {currentGame.status === 'lost' && (
           <div className="text-center text-lg font-medium text-red-600">
-            Game Over! The word was: {currentGame.word}
+            The word was: {currentGame.word}! Try again?
           </div>
         )}
 

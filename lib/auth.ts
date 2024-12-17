@@ -2,7 +2,6 @@ import { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { FirestoreAdapter } from "@auth/firebase-adapter";
 import { adminDb } from "@/lib/firebase-admin";
-import { Adapter } from "next-auth/adapters";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -19,44 +18,42 @@ export const authOptions: AuthOptions = {
       }
     }),
   ],
-  adapter: FirestoreAdapter(adminDb) as Adapter,
+  adapter: FirestoreAdapter(adminDb),
   session: {
-    strategy: "database",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60, // 24 hours
+    strategy: "jwt",
   },
   cookies: {
     sessionToken: {
-      name: 'next-auth.session-token',
+      name: `__Secure-next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
       },
     },
     callbackUrl: {
-      name: 'next-auth.callback-url',
+      name: `__Secure-next-auth.callback-url`,
       options: {
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
       },
     },
     csrfToken: {
-      name: 'next-auth.csrf-token',
+      name: `__Host-next-auth.csrf-token`,
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
       },
     },
   },
   callbacks: {
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       if (session?.user) {
-        session.user.id = user.id;
+        session.user.id = token.sub!;
       }
       return session;
     },
@@ -68,5 +65,4 @@ export const authOptions: AuthOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true,
 }; 

@@ -2,6 +2,7 @@ import { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { FirestoreAdapter } from "@auth/firebase-adapter";
 import { adminDb } from "@/lib/firebase-admin";
+import { Adapter } from "next-auth/adapters";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -18,9 +19,11 @@ export const authOptions: AuthOptions = {
       }
     }),
   ],
-  adapter: FirestoreAdapter(adminDb),
+  adapter: FirestoreAdapter(adminDb) as Adapter,
   session: {
-    strategy: "jwt",
+    strategy: "database",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   cookies: {
     sessionToken: {
@@ -51,9 +54,9 @@ export const authOptions: AuthOptions = {
     },
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       if (session?.user) {
-        session.user.id = token.sub!;
+        session.user.id = user.id;
       }
       return session;
     },
@@ -65,4 +68,5 @@ export const authOptions: AuthOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: true,
 }; 

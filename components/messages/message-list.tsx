@@ -34,7 +34,7 @@ export function MessageList() {
   }
 
   return (
-    <Card className="h-[600px] flex flex-col bg-gradient-to-b from-pink-50/50">
+    <Card className="h-[calc(100vh-12rem)] flex flex-col bg-gradient-to-b from-pink-50/50">
       <div className="p-4 border-b flex items-center gap-3">
         <Avatar className="w-8 h-8">
           <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-sm">

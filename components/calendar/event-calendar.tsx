@@ -22,7 +22,7 @@ export function EventCalendar() {
   });
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
       <Card className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-semibold text-pink-600">Our Special Dates</h3>

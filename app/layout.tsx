@@ -23,12 +23,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+      </head>
       <body className={inter.className} suppressHydrationWarning>
         <AuthProvider>
           <ClientProvider>
             <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
               <Header />
-              <main className="max-w-6xl mx-auto p-4">
+              <main className="max-w-6xl mx-auto p-4 sm:p-6">
                 {children}
               </main>
             </div>

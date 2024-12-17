@@ -22,7 +22,7 @@ export default function HomePage() {
           <div className="text-4xl animate-bounce">{<RandomEmoticon />}</div>
         </section>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="p-8 hover:shadow-lg transition-all">
             <Heart className="h-12 w-12 text-pink-600 mb-6" />
             <h2 className="text-2xl font-semibold mb-3">Share Your Journey</h2>
@@ -100,7 +100,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Link href="/chat">
           <Card className="p-8 hover:shadow-lg transition-all cursor-pointer group">
             <MessageCircle className="h-12 w-12 text-pink-600 mb-6 group-hover:scale-110 transition-transform" />

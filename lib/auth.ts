@@ -14,7 +14,7 @@ export const authOptions: AuthOptions = {
           prompt: "select_account",
           access_type: "online",
           response_type: "code",
-          scope: "openid email profile"
+          scope: "openid email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
         }
       }
     }),

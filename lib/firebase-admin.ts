@@ -6,11 +6,21 @@ if (!process.env.FIREBASE_PRIVATE_KEY) {
   throw new Error('FIREBASE_PRIVATE_KEY is not set in environment variables');
 }
 
+// Clean and format the private key
+let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+  privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----\n`;
+}
+privateKey = privateKey
+  .replace(/\\n/g, '\n')
+  .replace(/"/g, '')
+  .replace(/\n\n/g, '\n');
+
 const firebaseAdminConfig = {
   credential: cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    privateKey: privateKey,
   })
 };
 

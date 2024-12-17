@@ -24,12 +24,12 @@ import { usePartner } from './use-partner';
 const eventConverter: FirestoreDataConverter<Event> = {
   toFirestore: (event: Event) => ({
     title: event.title,
-    description: event.description,
+    description: event.description || null,
     date: Timestamp.fromDate(event.date),
     type: event.type,
     userId: event.userId,
     createdAt: event.createdAt ? Timestamp.fromDate(event.createdAt) : Timestamp.now(),
-    shared: event.shared,
+    shared: event.shared || false,
   }),
   fromFirestore: (snapshot, options) => {
     const data = snapshot.data(options);
@@ -41,7 +41,7 @@ const eventConverter: FirestoreDataConverter<Event> = {
       type: data.type,
       userId: data.userId,
       createdAt: data.createdAt.toDate(),
-      shared: data.shared,
+      shared: data.shared || false,
     } as Event;
   },
 };
@@ -91,6 +91,7 @@ export function useCalendar() {
       id: '', // Will be set by Firestore
       userId: session.user.id,
       createdAt: new Date(),
+      shared: false,
     } as Event);
   };
 
